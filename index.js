@@ -18,13 +18,29 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/:date", function (req, res) {
+  let dateParam = req.params.date;
 
+  if(!isNaN(dateParam)) {
+    dateParam = parseInt(dateParam);
+  }
+
+  let date = new Date(dateParam);
+  if(date.toString() === 'Invalid Date') {
+    // If the date is invalid, return an error
+    return res.json({error: 'Invalid Date'});
+  }
+
+  res.json({
+    unix: date.getTime(),
+    utc: date.toUTCString()
+  });
+})
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
